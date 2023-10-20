@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CityNav" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.CityNav" parent="Base.Theme.CityNav" />
+    <style name="Title1Style">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">25dp</item>
+    </style>
+
+    <style name="Title2Style">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="SubTitle1Style">
+        <item name="android:textColor">@color/subTitle1Color</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+</resources>
