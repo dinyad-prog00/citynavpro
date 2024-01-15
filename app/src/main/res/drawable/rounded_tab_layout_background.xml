@@ -1,0 +1,5 @@
+<!-- rounded_tab_layout_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/secondaryBgColor" />
+    <corners android:radius="16dp" /> <!-- Adjust the radius as needed -->
+</shape>
