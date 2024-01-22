@@ -15,8 +15,6 @@ class PlaceModel(
     override fun toString(): String {
         return "PlaceModel(placeId='$placeId', name='$name', type='$type', photo_refs=$photo_refs, photos=$photos)"
     }
-
-
 }
 
 class  PhotoRef (

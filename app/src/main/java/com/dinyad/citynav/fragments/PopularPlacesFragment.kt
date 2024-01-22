@@ -11,33 +11,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dinyad.citynav.MainActivity
 import com.dinyad.citynav.R
 import com.dinyad.citynav.adapters.PlaceAdapter
-import com.dinyad.citynav.models.PlaceModel
-import com.dinyad.citynav.repositories.PlaceRepository.Singleton.places
+import com.dinyad.citynav.repositories.PlaceRepository.Singleton.popularPlaces
 import com.dinyad.citynav.viewmodels.SharedViewModel
-import com.google.android.libraries.places.api.model.PlaceTypes
 
-class PlacesTabView(
-    private val context: MainActivity,
-    private val type: String,
-) : Fragment(){
+class PopularPlacesFragment(
+    private val context:MainActivity
+) : Fragment(
+
+){
     lateinit var sharedViewModel: SharedViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater?.inflate(R.layout.places_tab_view,container,false)
-        val wellknown_places= view?.findViewById<RecyclerView>(R.id.tab_view)
-        // Access SharedViewModel from the activity
+        val view = inflater?.inflate(R.layout.popular_places,container,false)
+
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
         val navController = sharedViewModel.navController.value;
-
-        wellknown_places?.adapter = places[type]?.let {
-            println("oui oui oui====== ${it.size}")
-            PlaceAdapter(context,
-                it,R.layout.place_tab_card,navController!!)
-        }
+        val wellknown_places= view?.findViewById<RecyclerView>(R.id.wellknown_places)
+        wellknown_places?.adapter = PlaceAdapter(context,popularPlaces,R.layout.place_card,navController!!)
         return view
+
+
     }
 }

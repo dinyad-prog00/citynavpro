@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dinyad.citynav.MainActivity
@@ -15,7 +16,8 @@ import com.dinyad.citynav.models.PlaceModel
 class PlaceAdapter(
     private  val context: MainActivity,
     private val placeList: ArrayList<PlaceModel>,
-    private val id : Int
+    private val id : Int,
+    private val navController: NavController
 ) : RecyclerView.Adapter<PlaceAdapter.ViewHolder>(){
     class  ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val placeImage = view.findViewById<ImageView>(R.id.place_item_img)
@@ -36,5 +38,9 @@ class PlaceAdapter(
         Glide.with(context).load(Uri.parse(currentPlace.photos[0])).into(holder.placeImage)
         holder.placeName.text = currentPlace.name
         holder.placeType?.text=currentPlace.type
+        holder.itemView.setOnClickListener {
+            navController.navigate(R.id.details_page)
+        }
+
     }
 }

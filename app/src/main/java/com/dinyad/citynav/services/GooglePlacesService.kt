@@ -77,10 +77,10 @@ class GooglePlacesService {
          * If not yet granted, launches the permission request.
          * See https://developer.android.com/training/permissions/requesting
          */
-        public suspend fun checkPermissionThenFindCurrentPlace(
+         fun checkPermissionThenRequestIfNot(
             context: Context,
             activity: Activity,
-            placesClient: PlacesClient
+
         ): Place? {
             when {
                 (ContextCompat.checkSelfPermission(
@@ -91,12 +91,14 @@ class GooglePlacesService {
                     ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED) -> {
                     // You can use the API that requires the permission.
-                    return getCurrentPlace(context, placesClient, activity)
+                   // return getCurrentPlace(context, placesClient, activity)
+                    Log.i(TAG,"Permissions already granted")
 
                 }
 
                 else -> {
                     // Ask for both the ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
+                    Log.i(TAG,"Permissions  requested")
                     ActivityCompat.requestPermissions(
                         activity,
                         arrayOf(
@@ -116,7 +118,7 @@ class GooglePlacesService {
         private val TAG = "CurrentPlaceActivity"
         private const val PERMISSION_REQUEST_CODE = 9
 
-        public suspend fun getCurrentPlace(
+        /* public suspend fun getCurrentPlace(
             context: Context,
             placesClient: PlacesClient,
             activity: Activity
@@ -170,7 +172,7 @@ class GooglePlacesService {
             return null
 
 
-        }
+        } */
 
         @SuppressLint("MissingPermission")
         fun getLastLocation(
@@ -249,18 +251,22 @@ class GooglePlacesService {
             placesDt.map { setPhotos(it) }
         }
 
-        suspend  fun getPlacesForManyTypes(placesApiService: GooglePlacesApiService,
-                                           location: String, types: List<String>) :  MutableMap<String, ArrayList<PlaceModel>> = coroutineScope {
+        suspend fun getPlacesForManyTypes(
+            placesApiService: GooglePlacesApiService,
+            location: String, types: List<String>
+        ): MutableMap<String, ArrayList<PlaceModel>> = coroutineScope {
 
             val deferreds: List<Deferred<Pair<String, List<PlaceModel>>>> = types.map { type ->
                 async(Dispatchers.Default) {
-                   type to getPlacesByType(placesApiService,location,type)
+                    type to getPlacesByType(placesApiService, location, type)
                 }
             }
-             deferreds.awaitAll().associate{ it.first to it.second } as MutableMap<String, ArrayList<PlaceModel>>
+            deferreds.awaitAll()
+                .associate { it.first to it.second } as MutableMap<String, ArrayList<PlaceModel>>
 
         }
-        fun setPhotos( place:PlaceModel): PlaceModel {
+
+        fun setPhotos(place: PlaceModel): PlaceModel {
             if (place.photo_refs != null) {
                 //val rr= getPhotoes(placesApiService, p.photo_refs);
                 place.photos =
@@ -269,7 +275,7 @@ class GooglePlacesService {
                 place.photos =
                     mutableListOf("https://images.pexels.com/photos/2087323/pexels-photo-2087323.jpeg?auto=compress&cs=tinysrgb&w=1200")
             }
-            place.type="PlaceType"
+            place.type = "PlaceType"
             return place
         }
 

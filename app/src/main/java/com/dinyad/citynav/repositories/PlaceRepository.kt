@@ -62,6 +62,7 @@ class PlaceRepository(
                     places.clear();
                     places.putAll(placesTmp)
                 }
+
                 withContext(Dispatchers.Main){
                     callback()
                 }
