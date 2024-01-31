@@ -116,7 +116,7 @@ class GooglePlacesService {
 
 
         private val TAG = "CurrentPlaceActivity"
-        private const val PERMISSION_REQUEST_CODE = 9
+        private const val PERMISSION_REQUEST_CODE = 10
 
         /* public suspend fun getCurrentPlace(
             context: Context,
@@ -184,6 +184,10 @@ class GooglePlacesService {
                     location?.let {
                         callback(location)
                     } ?: run {
+                        val loc = Location("test")
+                        loc.longitude =-122.0849 // 1.8805170
+                        loc.latitude =37.4226 //50.9532068
+                        callback(loc)
                         Log.e(TAG, "=============Dernière localisation non disponible.")
                     }
                 }
