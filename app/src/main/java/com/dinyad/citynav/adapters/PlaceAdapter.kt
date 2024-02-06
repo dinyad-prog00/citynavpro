@@ -12,13 +12,16 @@ import com.bumptech.glide.Glide
 import com.dinyad.citynav.MainActivity
 import com.dinyad.citynav.R
 import com.dinyad.citynav.models.PlaceModel
+import com.dinyad.citynav.viewmodels.SharedViewModel
 
 class PlaceAdapter(
     private  val context: MainActivity,
     private val placeList: ArrayList<PlaceModel>,
     private val id : Int,
-    private val navController: NavController
+    private val navController: NavController,
+    private  val sharedViewModel: SharedViewModel
 ) : RecyclerView.Adapter<PlaceAdapter.ViewHolder>(){
+
     class  ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val placeImage = view.findViewById<ImageView>(R.id.place_item_img)
         val placeName = view.findViewById<TextView>(R.id.place_name)
@@ -39,7 +42,9 @@ class PlaceAdapter(
         holder.placeName.text = currentPlace.name
         holder.placeType?.text=currentPlace.type
         holder.itemView.setOnClickListener {
+            sharedViewModel.currentPlace.value = currentPlace
             navController.navigate(R.id.details_page)
+
         }
 
     }

@@ -82,6 +82,7 @@ class GooglePlacesService {
             activity: Activity,
 
         ): Place? {
+
             when {
                 (ContextCompat.checkSelfPermission(
                     context,

@@ -96,8 +96,8 @@ class HomePageFragment() :Fragment() {
          fun onItemClick(placeModel: PlaceModel) {
             // Handle item click, e.g., navigate to place details page
             // You can use Navigation Component or any other navigation method
-            // val action = HomePageFragmentDirections.actionHomeToDetails(placeModel.placeId)
-           // navController.navigate(action)
+            //val action = HomePageFragmentDirections.actionHomeToDetails()
+           //navController.navigate(action)
         }
 
         return  view;

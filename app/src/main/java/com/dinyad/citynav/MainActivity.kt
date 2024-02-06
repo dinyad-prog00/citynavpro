@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
             }
 
 
+
+
         }
 
         private fun setupNavigation() {
@@ -42,7 +44,18 @@ class MainActivity : AppCompatActivity() {
 
             val appBarConfiguration = AppBarConfiguration(navController.graph)
             val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
             setSupportActionBar(toolbar)
+            actionBar?.apply {
+                // Display the back (up) button
+                setDisplayHomeAsUpEnabled(true)
+                //setHomeAsUpIndicator(R.drawable.ic_back_arrow)
+
+                // Hide the application icon and title
+                setDisplayShowHomeEnabled(false)
+                setDisplayShowTitleEnabled(false)
+
+            }
             setupActionBarWithNavController(navController, appBarConfiguration)
 
 

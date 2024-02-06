@@ -36,7 +36,7 @@ class PlacesTabView(
         wellknown_places?.adapter = places[type]?.let {
             println("oui oui oui====== ${it.size}")
             PlaceAdapter(context,
-                it,R.layout.place_tab_card,navController!!)
+                it,R.layout.place_tab_card,navController!!,sharedViewModel)
         }
         return view
     }

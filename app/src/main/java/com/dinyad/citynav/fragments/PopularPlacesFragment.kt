@@ -31,8 +31,9 @@ class PopularPlacesFragment(
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
         val navController = sharedViewModel.navController.value;
+
         val wellknown_places= view?.findViewById<RecyclerView>(R.id.wellknown_places)
-        wellknown_places?.adapter = PlaceAdapter(context,popularPlaces,R.layout.place_card,navController!!)
+        wellknown_places?.adapter = PlaceAdapter(context,popularPlaces,R.layout.place_card,navController!!,sharedViewModel)
         return view
 
 
