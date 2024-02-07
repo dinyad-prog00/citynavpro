@@ -4,14 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.dinyad.citynav.R
 import com.dinyad.citynav.services.GooglePlacesService
 import com.dinyad.citynav.viewmodels.SharedViewModel
+import android.content.Intent
+import android.widget.Button
+import com.dinyad.citynav.loginRepository.LoginEmail
+import com.dinyad.citynav.loginRepository.RegisterActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
@@ -30,7 +31,22 @@ class MainActivity : AppCompatActivity() {
             if (savedInstanceState == null) {
                 setupNavigation()
             }
+            val btnGoToRegister = findViewById<Button>(R.id.btnRegister)
 
+            btnGoToRegister.setOnClickListener {
+                // Ouvrir l'activité d'enregistrement
+                val intent = Intent(this, RegisterActivity::class.java)
+                startActivity(intent)
+            }
+            // Récupérer la référence du bouton
+            //val btnConnexion = findViewById<Button>(R.id.btnConnexion)
+
+            // Ajouter un écouteur de clic au bouton
+            //btnConnexion.setOnClickListener {
+                // Démarrer l'activité de connexion
+               // val intent = Intent(this, LoginEmail::class.java)
+              //  startActivity(intent)
+          //  }
 
 
 

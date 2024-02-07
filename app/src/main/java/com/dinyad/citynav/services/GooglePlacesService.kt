@@ -17,6 +17,8 @@ import com.dinyad.citynav.models.PhotoRef
 import com.dinyad.citynav.models.PlaceModel
 import com.dinyad.citynav.services.api.GooglePlacesApiService
 import com.dinyad.citynav.services.api.PlacesApiResponse
+import com.dinyad.citynav.services.api.YelpBusiness
+import com.dinyad.citynav.services.api.YelpBusinessDetails
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -117,7 +119,7 @@ class GooglePlacesService {
 
 
         private val TAG = "CurrentPlaceActivity"
-        private const val PERMISSION_REQUEST_CODE = 9
+        private const val PERMISSION_REQUEST_CODE = 10
 
         /* public suspend fun getCurrentPlace(
             context: Context,
@@ -185,6 +187,10 @@ class GooglePlacesService {
                     location?.let {
                         callback(location)
                     } ?: run {
+                        val loc = Location("test")
+                        loc.longitude =-122.0849 // 1.8805170
+                        loc.latitude =37.4226 //50.9532068
+                        callback(loc)
                         Log.e(TAG, "=============Dernière localisation non disponible.")
                     }
                 }
@@ -279,6 +285,17 @@ class GooglePlacesService {
             place.type = "PlaceType"
             return place
         }
+
+
+        fun businessToPlace(business:List<YelpBusinessDetails>) : List<PlaceModel>{
+
+            return  business.map { PlaceModel(it.placeId, listOf()) }
+
+        }
+
+
+
+
 
         val typesNames = mapOf<String, String>(
             PlaceTypes.RESTAURANT to "Restaurant",

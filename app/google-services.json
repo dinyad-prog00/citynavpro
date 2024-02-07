@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "250805674038",
+    "project_id": "citynav-6ca20",
+    "storage_bucket": "citynav-6ca20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250805674038:android:480810417ad1bada403897",
+        "android_client_info": {
+          "package_name": "com.dinyad.citynav"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250805674038-k8oljho8e5sjbtobkmvmu8hleuhun47g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dinyad.citynav",
+            "certificate_hash": "dec3e2ec39e93c595d2e59bc330c4accc162523b"
+          }
+        },
+        {
+          "client_id": "250805674038-ekg65gv9kd6ma2o65vehsm5df9ogl7dd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlmzc-I_FbSe2uVqQ4Uijyn5EFEUsmXp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250805674038-1h40ke1oo3p0fo5422bjce86pg4q535a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
