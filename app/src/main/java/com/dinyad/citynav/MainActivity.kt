@@ -31,13 +31,14 @@ class MainActivity : AppCompatActivity() {
             if (savedInstanceState == null) {
                 setupNavigation()
             }
+            /*
             val btnGoToRegister = findViewById<Button>(R.id.btnRegister)
 
             btnGoToRegister.setOnClickListener {
                 // Ouvrir l'activité d'enregistrement
                 val intent = Intent(this, RegisterActivity::class.java)
                 startActivity(intent)
-            }
+            }*/
             // Récupérer la référence du bouton
             //val btnConnexion = findViewById<Button>(R.id.btnConnexion)
 

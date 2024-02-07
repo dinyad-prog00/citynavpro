@@ -12,27 +12,29 @@ import retrofit2.http.Query
 interface YelpPlacesApiService {
     @GET("businesses/search")
     suspend fun getNearbyPlaces(
-        @Query("term") term: String,
-        @Query("latitude") latitude: String,
-        @Query("longitude") longitude: String,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("limit") limit: Int=20,
         @Query("radius") radius: Int=4000,
-        @Header("Authorization") authorization: String = com.dinyad.citynav.BuildConfig.YELP_API_KEY,
+        @Query("categories") categories: String,
+        @Header("Authorization") authorization: String = "Bearer ${com.dinyad.citynav.BuildConfig.YELP_API_KEY}",
     ): Response<YelpResponse>
 
     @GET("businesses/search")
     suspend fun getPolularPlaces(
-        @Query("term") term: String,
-        @Query("latitude") latitude: String,
-        @Query("longitude") longitude: String,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
         @Query("radius") radius: Int=4000,
+        @Query("limit") limit: Int=20,
+        @Query("categories") categories: String="adultentertainment,amusementparks,apartments,aquariums,bars,beaches,cafes,food,hotels,museums",
         @Query("attributes") attributes : String= "hot_and_new",
-        @Header("Authorization") authorization: String = com.dinyad.citynav.BuildConfig.YELP_API_KEY,
+        @Header("Authorization") authorization: String = "Bearer ${com.dinyad.citynav.BuildConfig.YELP_API_KEY}",
     ): Response<YelpResponse>
 
     @GET("businesses/{placeId}")
     suspend fun getPlaceDetails(
         @Path("placeId") placeId: String,
-        @Header("Authorization") authorization: String = com.dinyad.citynav.BuildConfig.YELP_API_KEY,
+        @Header("Authorization") authorization: String = "Bearer ${com.dinyad.citynav.BuildConfig.YELP_API_KEY}",
     ): Response<YelpBusinessDetails>
 
 
@@ -44,13 +46,15 @@ data class YelpResponse(
 )
 
 data class YelpBusiness(
+    @SerializedName("id")  val placeId: String,
     val name: String,
     val rating: Double,
     val location: YelpLocation
 )
 
 data class YelpLocation(
-    val address1: String
+    val address1: String,
+    val display_address : List<String>
 )
 
 

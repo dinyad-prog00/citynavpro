@@ -7,6 +7,7 @@ import com.dinyad.citynav.repositories.PlaceRepository.Singleton.places
 import com.dinyad.citynav.repositories.PlaceRepository.Singleton.popularPlaces
 import com.dinyad.citynav.services.GooglePlacesService
 import com.dinyad.citynav.services.api.GooglePlacesApiService
+import com.dinyad.citynav.services.api.YelpPlacesApiService
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.libraries.places.api.model.PlaceTypes
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +20,7 @@ import kotlinx.coroutines.withContext
 
 class PlaceRepository(
     private val placesApiService: GooglePlacesApiService,
+    private  val yelpService: YelpPlacesApiService,
     private val fusedLocationClient: FusedLocationProviderClient
 ) {
     object Singleton {
@@ -30,23 +32,41 @@ class PlaceRepository(
     fun updateNeabyPlacesList(coroutineScope: CoroutineScope, callback: () -> Unit) {
 
         GooglePlacesService.getLastLocation(fusedLocationClient) {
-            Log.i("updateNeabyPlacesList", "${it.latitude},${it.longitude}")
+            Log.i("updateNeabyPlacesList yyy", "${it.latitude},${it.longitude}")
             coroutineScope.launch(Dispatchers.Default) {
+
+
+                val pPlaces = GooglePlacesService.getYelpPopularPlaces(
+                    yelpService,
+                    50.94811382774165,
+                    1.8533044913016194,
+                    listOf(PlaceTypes.MUSEUM,PlaceTypes.RESTAURANT,PlaceTypes.LODGING),
+                )
+
+                /*
                val pPlaces = GooglePlacesService.getPopularPlaces(
                     placesApiService,
                     "${it.latitude},${it.longitude}",
                     listOf(PlaceTypes.MUSEUM,PlaceTypes.RESTAURANT,PlaceTypes.LODGING),
                     25
-                )
-                Log.i("updateNeabyPlacesList", pPlaces?.size.toString())
+                )*/
+
+                Log.i("updateNeabyPlacesList ZZ", pPlaces?.size.toString())
+
+
                 if (pPlaces != null) {
                     popularPlaces.clear();
                     popularPlaces.addAll(pPlaces.toList())
                 }
 
-                /*withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main){
+
+                    Log.i("updateNeabyPlacesList callback", pPlaces?.size.toString())
                     callback()
                 }
+
+
+                /*
 
                 val restos = GooglePlacesService.getPlacesByType(
                     placesApiService,
@@ -56,12 +76,12 @@ class PlaceRepository(
                 if (restos != null) {
                     places[PlaceTypes.RESTAURANT] = ArrayList(restos)
                 }
-*/
+
                 val placesTmp = GooglePlacesService.getPlacesForManyTypes(placesApiService,"${it.latitude},${it.longitude}",listOf(PlaceTypes.MUSEUM,PlaceTypes.RESTAURANT,PlaceTypes.LODGING))
                 if (placesTmp != null) {
                     places.clear();
                     places.putAll(placesTmp)
-                }
+                }*/
 
                 withContext(Dispatchers.Main){
                     callback()

@@ -14,11 +14,14 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat.FocusRelativeDirection
 import com.dinyad.citynav.models.PhotoRef
+import com.dinyad.citynav.models.PlaceEditorialSummary
 import com.dinyad.citynav.models.PlaceModel
 import com.dinyad.citynav.services.api.GooglePlacesApiService
 import com.dinyad.citynav.services.api.PlacesApiResponse
 import com.dinyad.citynav.services.api.YelpBusiness
 import com.dinyad.citynav.services.api.YelpBusinessDetails
+import com.dinyad.citynav.services.api.YelpPlacesApiService
+import com.dinyad.citynav.services.api.YelpResponse
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -53,13 +56,22 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Query
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
+/*
 fun Response<PlacesApiResponse>.bodyList(): List<PlaceModel> {
     return body()?.let { it.results }.also { println("Places lis size ${it?.size}}") }
+        ?: emptyList()
+
+}*/
+
+fun Response<YelpResponse>.bodyList(): List<YelpBusiness> {
+    println()
+    return body()?.let { println(it); it.businesses }.also { println("Places list size ${it}") }
         ?: emptyList()
 
 }
@@ -198,80 +210,82 @@ class GooglePlacesService {
                     Log.e(TAG, "Erreur lors de la récupération de la localisation: $e")
                 }
         }
+        /*
+                suspend fun getPlacesByType2(
+                    placesApiService: GooglePlacesApiService,
+                    location: String,
+                    type: String
+                ): List<PlaceModel> = placesApiService.getNearbyPlaces(location, 1000, type).bodyList()
 
-        suspend fun getPlacesByType2(
-            placesApiService: GooglePlacesApiService,
-            location: String,
-            type: String
-        ): List<PlaceModel> = placesApiService.getNearbyPlaces(location, 1000, type).bodyList()
 
-        suspend fun getPlacesByType(
-            placesApiService: GooglePlacesApiService,
-            location: String,
-            type: String
-        ): List<PlaceModel> = coroutineScope {
-            val places: List<PlaceModel> =
-                placesApiService.getNearbyPlaces(location, 1000, type).bodyList()
 
-            val deferreds: List<Deferred<PlaceModel?>> = places.map { p ->
-                async(Dispatchers.Default) {
+                suspend fun getPlacesByType(
+                    placesApiService: GooglePlacesApiService,
+                    location: String,
+                    type: String
+                ): List<PlaceModel> = coroutineScope {
+                    val places: List<PlaceModel> =
+                        placesApiService.getNearbyPlaces(location, 1000, type).bodyList()
 
-                    placesApiService.getPlaceDetails(p.placeId).body()?.result
+                    val deferreds: List<Deferred<PlaceModel?>> = places.map { p ->
+                        async(Dispatchers.Default) {
+
+                            placesApiService.getPlaceDetails(p.placeId).body()?.result
+                        }
+                    }
+
+                    val placesDt: List<PlaceModel> =
+                        deferreds.awaitAll().filter { it != null } as List<PlaceModel>
+
+                    placesDt.map { setPhotos(it) }
+
                 }
-            }
 
-            val placesDt: List<PlaceModel> =
-                deferreds.awaitAll().filter { it != null } as List<PlaceModel>
-
-            placesDt.map { setPhotos(it) }
-
-        }
-
-        suspend fun getPopularPlacesByType(
-            placesApiService: GooglePlacesApiService,
-            location: String
-        ): List<PlaceModel> = placesApiService.getPolularPlaces(location, 1000).bodyList()
+                suspend fun getPopularPlacesByType(
+                    placesApiService: GooglePlacesApiService,
+                    location: String
+                ): List<PlaceModel> = placesApiService.getPolularPlaces(location, 1000).bodyList()
 
 
-        suspend fun getPopularPlaces(
-            placesApiService: GooglePlacesApiService,
-            location: String,
-            types: List<String>,
-            limit: Int = 20
-        ): List<PlaceModel> = coroutineScope {
-            val deferreds: List<Deferred<List<PlaceModel>>> = types.map { type ->
-                async(Dispatchers.Default) {
-                    placesApiService.getPolularPlaces(location, 1000, type).bodyList()
+                suspend fun getPopularPlaces(
+                    placesApiService: GooglePlacesApiService,
+                    location: String,
+                    types: List<String>,
+                    limit: Int = 20
+                ): List<PlaceModel> = coroutineScope {
+                    val deferreds: List<Deferred<List<PlaceModel>>> = types.map { type ->
+                        async(Dispatchers.Default) {
+                            placesApiService.getPolularPlaces(location, 1000, type).bodyList()
+                        }
+                    }
+                    val places: List<PlaceModel> = deferreds.awaitAll().flatten().shuffled().take(limit)
+
+                    val deferreds2: List<Deferred<PlaceModel?>> = places.map { p ->
+                        async(Dispatchers.Default) {
+                            placesApiService.getPlaceDetails(p.placeId).body()?.result
+                        }
+                    }
+
+                    val placesDt: List<PlaceModel> =
+                        deferreds2.awaitAll().filter { it != null } as List<PlaceModel>
+
+                    placesDt.map { setPhotos(it) }
                 }
-            }
-            val places: List<PlaceModel> = deferreds.awaitAll().flatten().shuffled().take(limit)
 
-            val deferreds2: List<Deferred<PlaceModel?>> = places.map { p ->
-                async(Dispatchers.Default) {
-                    placesApiService.getPlaceDetails(p.placeId).body()?.result
-                }
-            }
+                suspend fun getPlacesForManyTypes(
+                    placesApiService: GooglePlacesApiService,
+                    location: String, types: List<String>
+                ): MutableMap<String, ArrayList<PlaceModel>> = coroutineScope {
 
-            val placesDt: List<PlaceModel> =
-                deferreds2.awaitAll().filter { it != null } as List<PlaceModel>
+                    val deferreds: List<Deferred<Pair<String, List<PlaceModel>>>> = types.map { type ->
+                        async(Dispatchers.Default) {
+                            type to getPlacesByType(placesApiService, location, type)
+                        }
+                    }
+                    deferreds.awaitAll()
+                        .associate { it.first to it.second } as MutableMap<String, ArrayList<PlaceModel>>
 
-            placesDt.map { setPhotos(it) }
-        }
-
-        suspend fun getPlacesForManyTypes(
-            placesApiService: GooglePlacesApiService,
-            location: String, types: List<String>
-        ): MutableMap<String, ArrayList<PlaceModel>> = coroutineScope {
-
-            val deferreds: List<Deferred<Pair<String, List<PlaceModel>>>> = types.map { type ->
-                async(Dispatchers.Default) {
-                    type to getPlacesByType(placesApiService, location, type)
-                }
-            }
-            deferreds.awaitAll()
-                .associate { it.first to it.second } as MutableMap<String, ArrayList<PlaceModel>>
-
-        }
+                } */
 
         fun setPhotos(place: PlaceModel): PlaceModel {
             if (place.photo_refs != null) {
@@ -286,15 +300,42 @@ class GooglePlacesService {
             return place
         }
 
+        ///********************* YELP
+        suspend fun getYelpPopularPlaces(
+            placesApiService: YelpPlacesApiService,
+            latitude: Double,
+             longitude: Double,
+            types: List<String>,
+            limit: Int = 20
+        ): List<PlaceModel> = coroutineScope {
 
-        fun businessToPlace(business:List<YelpBusinessDetails>) : List<PlaceModel>{
+            Log.i("yelp", "doing")
 
-            return  business.map { PlaceModel(it.placeId, listOf()) }
+            val places: List<YelpBusiness> = placesApiService.getPolularPlaces(latitude,longitude).bodyList()
 
+            Log.i("yelp", "done 1: ${places.size}")
+            val deferreds2: List<Deferred<YelpBusinessDetails?>> = places.map { p ->
+                async(Dispatchers.Default) {
+                    placesApiService.getPlaceDetails(p.placeId).body()
+                }
+            }
+
+
+            val placesDt: List<PlaceModel> =
+                deferreds2.awaitAll().filter { it != null }.map { businessToPlace(it!!) }
+            Log.i("yelp", "done 2: ${placesDt.size}")
+            placesDt
         }
 
 
+        fun businessToPlace(business:YelpBusinessDetails) : PlaceModel{
+            val it = business
+            return  PlaceModel(it.placeId,it.name, "Restorants Yp",
+                PlaceEditorialSummary("Pas de description"),it.location.display_address.joinToString(", "),
+                listOf(),it.photos
+            )
 
+        }
 
 
         val typesNames = mapOf<String, String>(

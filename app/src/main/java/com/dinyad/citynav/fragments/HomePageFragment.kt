@@ -18,6 +18,7 @@ import com.dinyad.citynav.adapters.CategoryPagerAdapter
 import com.dinyad.citynav.models.PlaceModel
 import com.dinyad.citynav.repositories.PlaceRepository
 import com.dinyad.citynav.services.api.GooglePlacesApiService
+import com.dinyad.citynav.services.api.YelpPlacesApiService
 import com.dinyad.citynav.viewmodels.SharedViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -54,10 +55,15 @@ class HomePageFragment() :Fragment() {
             .baseUrl("https://maps.googleapis.com/maps/api/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
+        val retrofitYelp = Retrofit.Builder()
+            .baseUrl("https://api.yelp.com/v3/")
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
 
         val placesApiService = retrofit.create(GooglePlacesApiService::class.java)
+        val yelpService = retrofitYelp.create(YelpPlacesApiService::class.java)
 
-        val placeRepository = PlaceRepository(placesApiService,fusedLocationClient)
+        val placeRepository = PlaceRepository(placesApiService,yelpService,fusedLocationClient)
 
         val viewPager = view?.findViewById<ViewPager>(R.id.viewPager)
         val tabLayout = view?.findViewById<TabLayout>(R.id.tabLayout)
@@ -67,6 +73,7 @@ class HomePageFragment() :Fragment() {
 
 
         placeRepository.updateNeabyPlacesList(lifecycleScope) {
+            println("PopularPlacesFragment")
             val transaction = childFragmentManager.beginTransaction()
             transaction.replace(R.id.home_fragment,PopularPlacesFragment(context!!))
             transaction.addToBackStack(null)
