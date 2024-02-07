@@ -17,6 +17,8 @@ import com.dinyad.citynav.models.PhotoRef
 import com.dinyad.citynav.models.PlaceModel
 import com.dinyad.citynav.services.api.GooglePlacesApiService
 import com.dinyad.citynav.services.api.PlacesApiResponse
+import com.dinyad.citynav.services.api.YelpBusiness
+import com.dinyad.citynav.services.api.YelpBusinessDetails
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -282,6 +284,17 @@ class GooglePlacesService {
             place.type = "PlaceType"
             return place
         }
+
+
+        fun businessToPlace(business:List<YelpBusinessDetails>) : List<PlaceModel>{
+
+            return  business.map { PlaceModel(it.placeId, listOf()) }
+
+        }
+
+
+
+
 
         val typesNames = mapOf<String, String>(
             PlaceTypes.RESTAURANT to "Restaurant",

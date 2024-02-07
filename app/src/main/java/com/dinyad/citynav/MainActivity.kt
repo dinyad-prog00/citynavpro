@@ -71,13 +71,6 @@ class MainActivity : AppCompatActivity() {
             return navController.navigateUp() || super.onSupportNavigateUp()
         }
 
-       /*
-       * Client ID
-        TyBnrSfE7oGWHVRS1BNrPw
 
-
-        API Key
-        077j0sWhGjr13rYBe4fw5BiwyoBniC8KYYLD4U3ufkJ4qqfrQXSsneoh6FCbHyN4GyfhLMyyw1te2a1pCNq_1SeV2eti6UUydYx49syZszTQmmTDZ6hg0iXae__BZXYx
-        * */
 
 }
