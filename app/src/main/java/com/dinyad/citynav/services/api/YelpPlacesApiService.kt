@@ -14,9 +14,9 @@ interface YelpPlacesApiService {
     suspend fun getNearbyPlaces(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("limit") limit: Int=20,
-        @Query("radius") radius: Int=4000,
         @Query("categories") categories: String,
+        @Query("limit") limit: Int=4,
+        @Query("radius") radius: Int=4000,
         @Header("Authorization") authorization: String = "Bearer ${com.dinyad.citynav.BuildConfig.YELP_API_KEY}",
     ): Response<YelpResponse>
 
@@ -25,9 +25,9 @@ interface YelpPlacesApiService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("radius") radius: Int=4000,
-        @Query("limit") limit: Int=20,
+        @Query("limit") limit: Int=4,
         @Query("categories") categories: String="adultentertainment,amusementparks,apartments,aquariums,bars,beaches,cafes,food,hotels,museums",
-        @Query("attributes") attributes : String= "hot_and_new",
+        //@Query("attributes") attributes : String= "hot_and_new",
         @Header("Authorization") authorization: String = "Bearer ${com.dinyad.citynav.BuildConfig.YELP_API_KEY}",
     ): Response<YelpResponse>
 
@@ -64,7 +64,8 @@ data class YelpBusinessDetails(
     val photos : List<String>,
     val location: YelpLocation,
     val phone: String,
-    val hours: List<YelpHour>  // You can customize this based on the details you need
+    val hours: List<YelpHour>  ,
+    val categories : List<Cat>
 )
 
 data class YelpHour(
@@ -78,3 +79,6 @@ data class YelpOpen(
     val end: String,
     val day: Int
 )
+
+data class Cat(val title: String)
+

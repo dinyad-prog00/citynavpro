@@ -10,44 +10,87 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.dinyad.citynav.services.GooglePlacesService
 import com.dinyad.citynav.viewmodels.SharedViewModel
 import android.content.Intent
-import android.widget.Button
-import com.dinyad.citynav.loginRepository.LoginEmail
-import com.dinyad.citynav.loginRepository.RegisterActivity
+import com.dinyad.citynav.Activities.LoginEmailActivity
+import com.dinyad.citynav.repositories.UserRepository
+import com.dinyad.citynav.repositories.UserRepository.Singleton.user
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+    private lateinit var auth: FirebaseAuth
+    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
 
     lateinit var sharedViewModel: SharedViewModel
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+            auth = FirebaseAuth.getInstance()
+            val  userRepository = UserRepository()
+            // Initialize the AuthStateListener
+            authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+                val usr = firebaseAuth.currentUser
+                if (usr == null) {
+                    // User is signed out, navigate to your login or home page
+                    user=null
+                    val intent = Intent(this, LoginEmailActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    finish()
+                }else{
+                    userRepository.getUser(FirebaseAuth.getInstance().currentUser?.uid!!){
+
+                    }
+                }
+            }
+            println("main activty ${FirebaseAuth.getInstance().currentUser}")
+
+            if (auth.currentUser != null) {
+
+                println("in main activty")
+
             setContentView(R.layout.activity_main)
+                sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+                sharedViewModel.mainActivity.value = this
+                if (savedInstanceState == null) {
+                    setupNavigation()
+                }
+
+                val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+                bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.item_home -> {
+                            // Navigate to HomeFragment
+                            navController.navigate(R.id.home_page)
+                            true
+                        }
+
+                        R.id.item_favorite -> {
+                            navController.navigate(R.id.favorite_page)
+                            true
+                        }
+
+                        R.id.item_compte -> {
+                            navController.navigate(R.id.profile_page)
+                            true
+                        }
+                        // Add cases for other BottomNavigationView items as needed
+                        else -> false
+                    }
+                }
 
             // Initialize SharedViewModel
-            sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-            sharedViewModel.mainActivity.value = this
+
 
             GooglePlacesService.checkPermissionThenRequestIfNot(this,this)
 
-            if (savedInstanceState == null) {
-                setupNavigation()
+
+
+
+            } else {
+                // User is not logged in, redirect to login
+                startActivity(Intent(this, LoginEmailActivity::class.java))
+                finish()
             }
-            /*
-            val btnGoToRegister = findViewById<Button>(R.id.btnRegister)
-
-            btnGoToRegister.setOnClickListener {
-                // Ouvrir l'activité d'enregistrement
-                val intent = Intent(this, RegisterActivity::class.java)
-                startActivity(intent)
-            }*/
-            // Récupérer la référence du bouton
-            //val btnConnexion = findViewById<Button>(R.id.btnConnexion)
-
-            // Ajouter un écouteur de clic au bouton
-            //btnConnexion.setOnClickListener {
-                // Démarrer l'activité de connexion
-               // val intent = Intent(this, LoginEmail::class.java)
-              //  startActivity(intent)
-          //  }
 
 
 
@@ -75,15 +118,23 @@ class MainActivity : AppCompatActivity() {
             }
             setupActionBarWithNavController(navController, appBarConfiguration)
 
-
-            /*navController.addOnDestinationChangedListener { _, destination, _ ->
-                // Handle destination changes if needed
-            }*/
         }
 
         override fun onSupportNavigateUp(): Boolean {
             return navController.navigateUp() || super.onSupportNavigateUp()
         }
+
+    override fun onStart() {
+        super.onStart()
+        // Register the AuthStateListener when the activity starts
+        auth.addAuthStateListener(authStateListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Unregister the AuthStateListener when the activity stops
+        auth.removeAuthStateListener(authStateListener)
+    }
 
 
 

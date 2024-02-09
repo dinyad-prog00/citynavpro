@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryBgColor"
+    android:padding="15dp"
+    tools:context=".MainActivity">
+    <ImageView
+        android:id="@+id/back_action"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_back_action"
+        android:layout_margin="10dp"
+         />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/back_action"
+        android:layout_marginTop="30dp"
+        android:id="@+id/group">
+
+        <TextView
+            android:id="@+id/msg"
+            style="@style/Title2Style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Laissez un avis pour aider les autres"
+
+            />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/msg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:progressTint="@color/orange"
+            android:rating="2.4" />
+
+        <EditText
+            android:id="@+id/editTextReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ratingBar"
+            android:layout_marginTop="20dp"
+            android:gravity="top|start"
+            android:hint="Votre avis"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_edittext_bg"
+            android:textColorHint="@color/white" />
+
+
+
+    </RelativeLayout>
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:layout_alignParentBottom="true"
+        android:text="Valider" />
+
+</RelativeLayout>

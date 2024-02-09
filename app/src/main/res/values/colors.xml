@@ -8,5 +8,13 @@
     <color name="subTitle1Color">#5F647E</color>
     <color name="subTitle2Color">#D1F366</color>
     <color name="subTitle3Color">#3F51B5</color>
+    <color name="orange">#FFA500</color>
+
+    <color name="gradientStart">#8BD8F9</color>
+    <color name="gradientEnd">#5495FF</color>
+
+
+
+
 
 </resources>

@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.dinyad.citynav.MainActivity
 import com.dinyad.citynav.R
 import com.dinyad.citynav.adapters.PlaceAdapter
-import com.dinyad.citynav.models.PlaceModel
 import com.dinyad.citynav.repositories.PlaceRepository.Singleton.places
 import com.dinyad.citynav.viewmodels.SharedViewModel
-import com.google.android.libraries.places.api.model.PlaceTypes
 
-class PlacesTabView(
+class PlacesTabViewFragment(
     private val context: MainActivity,
     private val type: String,
 ) : Fragment(){

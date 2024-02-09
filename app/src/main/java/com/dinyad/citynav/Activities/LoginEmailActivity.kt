@@ -1,5 +1,8 @@
-package com.dinyad.citynav.loginRepository
+package com.dinyad.citynav.Activities
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -9,9 +12,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dinyad.citynav.MainActivity
 import com.dinyad.citynav.R
+import com.dinyad.citynav.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
-class LoginEmail : AppCompatActivity() {
+class LoginEmailActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var editTextEmail: EditText
@@ -34,6 +38,7 @@ class LoginEmail : AppCompatActivity() {
 
         // Récupérer la référence du lien texte pour l'enregistrement
         tvRegisterLink = findViewById(R.id.tvRegisterLink)
+        val userRepository = UserRepository()
 
         // Ajouter un écouteur de clic pour le lien texte
         tvRegisterLink.setOnClickListener {
@@ -50,6 +55,7 @@ class LoginEmail : AppCompatActivity() {
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
+                        mAuth.currentUser?.uid
                         // Connexion réussie
                         Toast.makeText(baseContext, "Authentication successful.", Toast.LENGTH_SHORT).show()
                         // Rediriger vers MainActivity
@@ -64,6 +70,19 @@ class LoginEmail : AppCompatActivity() {
                     }
                 }
         }
+
+        val cityNav : TextView = findViewById(R.id.citynav)
+        val paint = cityNav?.paint
+        val width = paint?.measureText(cityNav?.text.toString())
+        val textShader: Shader = LinearGradient(0f, 0f, width!!, cityNav?.textSize!!, intArrayOf(
+            Color.parseColor("#8BD8F9"),
+            Color.parseColor("#5495FF"),
+
+            ), null, Shader.TileMode.REPEAT)
+
+        cityNav?.paint?.setShader(textShader)
+
+
     }
     // Méthode appelée lors du clic sur le lien texte
     fun goToRegisterActivity(view: View) {

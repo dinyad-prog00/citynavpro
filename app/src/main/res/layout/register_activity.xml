@@ -2,14 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/primaryBgColor"
+    android:padding="50dp">
+
+    <TextView
+        android:id="@+id/citynav"
+        android:layout_marginTop="30dp"
+        style="@style/CityNav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CityNav"
+        android:layout_centerHorizontal="true"
+        />
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="30dp"
+        android:hint="Name"
+        android:layout_below="@id/citynav"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextEmail1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/editTextName"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:hint="Email"
         android:inputType="textEmailAddress" />
 
@@ -18,9 +44,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextEmail1"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="16dp"
         android:hint="Mot de passe"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:inputType="textPassword" />
 
     <Button
@@ -39,6 +67,7 @@
         android:layout_marginTop="53dp"
         android:clickable="true"
         android:onClick="goToLoginActivity"
+        android:textColor="@color/white"
         android:text="Si vous avez déjà un compte, connectez-vous?"
         android:textColorLink="?attr/colorPrimary" />
 

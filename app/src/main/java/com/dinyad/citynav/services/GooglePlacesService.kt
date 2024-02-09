@@ -305,8 +305,7 @@ class GooglePlacesService {
             placesApiService: YelpPlacesApiService,
             latitude: Double,
              longitude: Double,
-            types: List<String>,
-            limit: Int = 20
+
         ): List<PlaceModel> = coroutineScope {
 
             Log.i("yelp", "doing")
@@ -314,25 +313,92 @@ class GooglePlacesService {
             val places: List<YelpBusiness> = placesApiService.getPolularPlaces(latitude,longitude).bodyList()
 
             Log.i("yelp", "done 1: ${places.size}")
+
             val deferreds2: List<Deferred<YelpBusinessDetails?>> = places.map { p ->
                 async(Dispatchers.Default) {
                     placesApiService.getPlaceDetails(p.placeId).body()
                 }
             }
 
-
             val placesDt: List<PlaceModel> =
                 deferreds2.awaitAll().filter { it != null }.map { businessToPlace(it!!) }
+
             Log.i("yelp", "done 2: ${placesDt.size}")
             placesDt
         }
 
+        suspend fun getYelpPlacesByCat (
+            placesApiService: YelpPlacesApiService,
+            latitude: Double,
+            longitude: Double,
+            cat: String
+            ): List<PlaceModel> =  coroutineScope {
+
+            val places: List<YelpBusiness> = placesApiService.getNearbyPlaces(latitude,longitude,cat).bodyList()
+
+            val deferreds2: List<Deferred<YelpBusinessDetails?>> = places.map { p ->
+                async(Dispatchers.Default) {
+                    placesApiService.getPlaceDetails(p.placeId).body()
+                }
+            }
+
+            val placesDt: List<PlaceModel> =
+                deferreds2.awaitAll().filter { it != null }.map { businessToPlace(it!!) }
+
+
+            placesDt
+
+        }
+
+        suspend fun getYelpPlacesByIds(
+            placesApiService: YelpPlacesApiService,
+            ids: List<String>
+
+            ): List<PlaceModel> = coroutineScope {
+
+
+            val deferreds: List<Deferred<YelpBusinessDetails?>> = ids.map { id ->
+                async(Dispatchers.Default) {
+                    placesApiService.getPlaceDetails(id).body()
+                }
+            }
+
+            val placesDt: List<PlaceModel> =
+                deferreds.awaitAll().filter { it != null }.map { businessToPlace(it!!) }
+
+            placesDt
+        }
+
+        suspend fun getYelpNearbyPlaces(
+            placesApiService: YelpPlacesApiService,
+            latitude: Double,
+            longitude: Double,
+        ): MutableMap<String, ArrayList<PlaceModel>> = coroutineScope {
+
+            val placesMap = mutableMapOf<String, ArrayList<PlaceModel>>()
+
+            placesMap[PlaceTypes.RESTAURANT] = getYelpPlacesByCat(placesApiService,latitude,longitude,"restaurants,bars,cafes") as ArrayList<PlaceModel>
+            placesMap[PlaceTypes.LODGING] = getYelpPlacesByCat(placesApiService,latitude,longitude,"apartments,hotels") as ArrayList<PlaceModel>
+            placesMap[PlaceTypes.MUSEUM] = getYelpPlacesByCat(placesApiService,latitude,longitude,"museums,adultentertainment,amusementparks,aquariums,arttours,churches") as ArrayList<PlaceModel>
+
+            placesMap
+        }
+
+
 
         fun businessToPlace(business:YelpBusinessDetails) : PlaceModel{
             val it = business
-            return  PlaceModel(it.placeId,it.name, "Restorants Yp",
-                PlaceEditorialSummary("Pas de description"),it.location.display_address.joinToString(", "),
-                listOf(),it.photos
+            var cat = it.categories.map { it.title }.joinToString(", ")
+            var type =
+                if (cat.length <= 20) {
+                    cat
+                } else {
+                    "${cat.take(20)}..."
+                }
+
+            return  PlaceModel(it.placeId,it.name, type,
+                PlaceEditorialSummary(cat),it.location.display_address.joinToString(", " ),
+                listOf(),   if (it.photos.isNotEmpty())  it.photos else mutableListOf("https://images.pexels.com/photos/2087323/pexels-photo-2087323.jpeg?auto=compress&cs=tinysrgb&w=1200")
             )
 
         }

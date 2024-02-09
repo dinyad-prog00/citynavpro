@@ -13,9 +13,15 @@
         <item name="android:textSize">25dp</item>
     </style>
 
+    <style name="CityNav">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">40dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Title2Style">
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">16dp</item>
     </style>
     <style name="Title3Style">
         <item name="android:textColor">@color/white</item>
@@ -28,13 +34,14 @@
     </style>
     <style name="SubTitle2Style">
         <item name="android:textColor">@color/subTitle2Color</item>
-        <item name="android:textSize">10dp</item>
+        <item name="android:textSize">14dp</item>
     </style>
     <style name="SubTitle3Style">
         <item name="android:textColor">@color/subTitle3Color</item>
         <item name="android:textSize">14dp</item>
         <item name="android:maxLines">1</item>
         <item name="singleLine">true</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:ellipsize">end</item>
     </style>
 
@@ -43,6 +50,7 @@
         <item name="android:textSize">25dp</item>
         <item name="android:maxLines">1</item>
         <item name="singleLine">true</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:ellipsize">end</item>
     </style>
 
@@ -55,6 +63,14 @@
     <style name="DescStyle">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14dp</item>
+    </style>
 
+
+    <style name="BottomNavigationStyle" parent="Widget.Design.BottomNavigationView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="BottomNavigationActiveIndicator" parent="Widget.Design.BottomNavigationView">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.dinyad.citynav.BuildConfig
 import com.dinyad.citynav.MainActivity
@@ -17,7 +17,8 @@ import com.dinyad.citynav.R
 import com.dinyad.citynav.adapters.CategoryPagerAdapter
 import com.dinyad.citynav.models.PlaceModel
 import com.dinyad.citynav.repositories.PlaceRepository
-import com.dinyad.citynav.services.api.GooglePlacesApiService
+import com.dinyad.citynav.repositories.UserRepository
+import com.dinyad.citynav.repositories.UserRepository.Singleton.user
 import com.dinyad.citynav.services.api.YelpPlacesApiService
 import com.dinyad.citynav.viewmodels.SharedViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -25,6 +26,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -60,14 +62,25 @@ class HomePageFragment() :Fragment() {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-        val placesApiService = retrofit.create(GooglePlacesApiService::class.java)
+
         val yelpService = retrofitYelp.create(YelpPlacesApiService::class.java)
 
-        val placeRepository = PlaceRepository(placesApiService,yelpService,fusedLocationClient)
+
+        val placeRepository = PlaceRepository(yelpService,fusedLocationClient)
 
         val viewPager = view?.findViewById<ViewPager>(R.id.viewPager)
         val tabLayout = view?.findViewById<TabLayout>(R.id.tabLayout)
         val loadingSpinner = view?.findViewById<ProgressBar>(R.id.loadingSpinner)
+
+        val greeting = view?.findViewById<TextView>(R.id.title)
+        val  userRepository = UserRepository()
+        if(user!=null){
+          greeting?.text="Bonjour ${user?.name} !"
+        }else{
+            userRepository.getUser(FirebaseAuth.getInstance().currentUser?.uid!!){
+                greeting?.text="Bonjour ${user?.name} !"
+            }
+        }
 
         tabLayout?.visibility = View.GONE
 
@@ -80,9 +93,9 @@ class HomePageFragment() :Fragment() {
             transaction.commit()
 
             val fragments = listOf(
-                PlacesTabView(context, PlaceTypes.RESTAURANT),
-                PlacesTabView(context, PlaceTypes.LODGING),
-                PlacesTabView(context, PlaceTypes.MUSEUM)
+                PlacesTabViewFragment(context, PlaceTypes.RESTAURANT),
+                PlacesTabViewFragment(context, PlaceTypes.LODGING),
+                PlacesTabViewFragment(context, PlaceTypes.MUSEUM)
             )
 
             val titles = listOf("Restaurants", "Hotêls", "Musées")
